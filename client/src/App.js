@@ -1,8 +1,26 @@
 import React, { Component } from 'react';
-
+import Influencers from 'components/Influencers'
 import logo from './logo.svg';
 
 import './App.css';
+
+const bodyString = `
+query Influencers {
+  influencers {
+    id
+    handle
+    avatar
+    twitchId
+    twitchFollowers
+    twitchViewers
+    twitchUrl
+    twitterFollowers
+    twitterLink
+    youtubeSubscribers
+    youtubeLink
+  }
+}
+`
 
 class App extends Component {
   state = {
@@ -28,12 +46,14 @@ class App extends Component {
 
   handleSubmit = async e => {
     e.preventDefault();
-    const response = await fetch('/api/world', {
+    const response = await fetch('http://localhost:4000/graphql', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ post: this.state.post }),
+      body: JSON.stringify({
+        query: bodyString
+      }),
     });
     const body = await response.text();
 
@@ -70,6 +90,7 @@ class App extends Component {
           <button type="submit">Submit</button>
         </form>
         <p>{this.state.responseToPost}</p>
+        <Influencers />
       </div>
     );
   }
