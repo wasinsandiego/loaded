@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import Influencers from 'components/Influencers'
+import InfluencerItem from 'components/InfluencerItem'
+import InfluencerDetails from 'components/InfluencerDetails'
 import logo from './logo.svg';
 
 import './App.css';
@@ -90,7 +92,9 @@ class App extends Component {
           <button type="submit">Submit</button>
         </form>
         <p>{this.state.responseToPost}</p>
-        <Influencers />
+        {/* <InfluencerItem id={1601235883} /> */}
+        <InfluencerDetails id={1601235883} />
+        {/* <Influencers /> */}
       </div>
     );
   }

@@ -3,7 +3,7 @@ import gql from 'graphql-tag'
 import { graphql } from 'react-apollo'
 import Debug from 'components/Debug'
 
-export const Influencers = (props) => (
+export const Influencers = props => (
   <Debug style={{ textAlign: 'left' }} {...props} />
 )
 
