@@ -1,14 +1,26 @@
 import React from 'react'
 import gql from 'graphql-tag'
 import { graphql } from 'react-apollo'
+import styled from '@emotion/styled'
+import { Page } from 'components/Layout'
 import Debug from 'components/Debug'
 
-export const Influencers = props => (
-  <Debug style={{ textAlign: 'left' }} {...props} />
+const Container = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 0, 255, 0.2);
+`
+
+export const InfluencersList = ({ data, isLoading }) => (
+  // <Debug style={{ textAlign: 'left' }} {...props} />
+  <Page>
+
+  </Page>
 )
 
 export const INFLUENCERS = gql`
-  query Influencers {
+  query InfluencersList {
     influencers {
       id
       handle
@@ -41,4 +53,4 @@ export const withInfluencers = graphql(INFLUENCERS, {
   }
 })
 
-export default withInfluencers(Influencers)
+export default withInfluencers(InfluencersList)

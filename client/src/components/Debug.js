@@ -7,7 +7,7 @@ import React from 'react'
  */
 const Debugger = ({ style, ...props }) => (
   <pre style={style}>
-    {console.groupCollapsed('Debugit')}
+    {console.groupCollapsed('Debug Me')}
     {console.log('props: ', props)}
     {console.groupEnd()}
     {JSON.stringify(props, null, '  ')}

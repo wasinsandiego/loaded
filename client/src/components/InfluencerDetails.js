@@ -15,8 +15,8 @@ import gql from 'graphql-tag'
 import { graphql } from 'react-apollo'
 import Debug from 'components/Debug'
 
-export const InfluencerDetails = props => (
-  <Debug style={{ textAlign: 'left' }} {...props} />
+export const InfluencerDetails = ({ data, isLoading }) => (
+  <Debug style={{ textAlign: 'left' }} {...data} />
 )
 
 export const INFLUENCER_DETAIL = gql`
