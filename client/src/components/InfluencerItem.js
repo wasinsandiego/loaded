@@ -13,16 +13,17 @@
 import React from 'react'
 import gql from 'graphql-tag'
 import { graphql } from 'react-apollo'
+import { compose, withState, lifecycle } from 'recompose'
 import styled from '@emotion/styled'
+import { secondaryText, thinText } from 'GlobalStyles'
+import { mungeDataInfluencerItem } from 'utils'
 import Thumb from 'components/Thumb'
 import Debug from 'components/Debug'
 
 const Container = styled.article`
   position: relative;
   width: 100%;
-  height: 100%;
-  height: 75px;
-  padding: 13px;
+  padding: 20px 30px;
   background: #fff;
   &:after {
     content: '';
@@ -33,38 +34,95 @@ const Container = styled.article`
     left: 20px;
     background: #f2f2f2;
   }
+
+  ${'' /* background: #f7f7f7;
+  background: -moz-linear-gradient(top, #f9f9f9 0%, #ffffff 80%);
+  background: -webkit-linear-gradient(top, #f9f9f9 0%,#ffffff 80%);
+  background: linear-gradient(to bottom, #f9f9f9 0%,#ffffff 80%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f9f9f9', endColorstr='#ffffff',GradientType=0 ); */}
+
+  background: #fff;
+  transition: background ease-out 400ms;
+  cursor: pointer;
+  &:hover {
+    background: #f9f9f9;
+    transition-duration: 0;
+  }
 `
 
-const Avatar = styled(Thumb)`
+const Avatar = styled(Thumb)(props => `
   display: inline-block;
   vertical-align: top;
   width: 50px;
   height: 50px;
-`
+  margin: 3px 25px 0 0;
 
+  box-shadow: 0px 0px 0px 5px rgba(171, 171, 171, 0.2);
+  opacity: 0;
+  transition: opacity ease-in-out 600ms 100ms, transform cubic-bezier(0.175, 0.885, 0.320, 1.275) 800ms;
+  ${props.show ? `
+    opacity: 1;
+  ` : ''}
+
+  .container:hover & {
+    transform: scale(1.1);
+  }
+`)
+
+// NOTE: Interesting result from using inline-table with absolute
+// centering. No clue if this behaves x-browser.
 const Content = styled.div`
   display: inline-block;
   vertical-align: top;
-  height: 100%;
-  margin-left: 20px;
+  margin-top: 8px;
 `
 
-const Title = styled.h2`
-  margin: 0 0 4px 0;
-`
+const Title = styled.div(props => `
+  margin: 0 0 0px 0;
+  font-size: 20px;
 
-const SubTitle = styled.p`
+  opacity: 0;
+  transition: opacity ease-in-out 600ms 300ms;
+  ${props.show ? `
+    opacity: 1;
+  ` : ''}
+`)
+
+const SubTitle = styled.div(props => `
+  ${secondaryText}
+  ${thinText}
   margin: 0;
-`
+  font-size: 14px;
 
-export const InfluencerItem = ({ id, thumbUrl, title, subTitle, isLoading }) => (
-  <Container>
-    <Avatar src={thumbUrl} alt={title} />
-    <Content>
-      <Title>{title}</Title>
-      <SubTitle>{subTitle}</SubTitle>
-    </Content>
-  </Container>
+  opacity: 0;
+  transition: opacity ease-in-out 600ms 500ms;
+  ${props.show ? `
+    opacity: 1;
+  ` : ''}
+`)
+
+export const InfluencerItem = compose(
+  withState('show', 'setShow', false),
+  lifecycle({
+    componentDidMount() {
+      // super lame but didn't want to get into key frames atm
+      setTimeout(() => this.props.setShow(true), 0)
+    }
+  })
+)(
+  ({ id, thumbUrl, title, subTitle, isLoading, show }) => (
+    <Container className='container'>
+      <Avatar
+        src={thumbUrl}
+        alt={title}
+        show={show}
+      />
+      <Content>
+        <Title show={show}>{title}</Title>
+        <SubTitle show={show}>{subTitle}</SubTitle>
+      </Content>
+    </Container>
+  )
 )
 
 export const INFLUENCER_ITEM = gql`
@@ -78,19 +136,12 @@ export const INFLUENCER_ITEM = gql`
   }
 `
 
-export const munger = data => data ? {
-  id: data.id,
-  thumbUrl: data.avatar,
-  title: data.handle,
-  subTitle: `${data.twitchViewers || 0} Twitch Viewers`
-} : {}
-
 export const withInfluencerItem = graphql(INFLUENCER_ITEM, {
   // map response to component props
   props: ({ data, ownProps }) => ({
     isLoading: data && data.loading,
     errors: data && data.error,
-    ...munger(data && data.influencer)
+    ...mungeDataInfluencerItem(data && data.influencer)
   }),
   // map props to query options
   options: ({ id }) => {

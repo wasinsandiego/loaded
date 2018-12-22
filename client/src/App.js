@@ -9,7 +9,6 @@ import InfluencerDetails from 'components/InfluencerDetails'
 const Container = styled.div`
   width: 100vw;
   height: 100vh;
-  border: solid 2px red;
 `
 
 const Box = styled.div`
@@ -33,10 +32,10 @@ const App = () => (
   <Container className='App'>
     <Header />
     {/* <InfluencerDetails id={1601235883} /> */}
-    {/* <InfluencersList /> */}
-    <Box>
+    <InfluencersList />
+    {/* <Box>
       <InfluencerItem id={1601235883} />
-    </Box>
+    </Box> */}
     <GlobalStyles />
   </Container>
 )

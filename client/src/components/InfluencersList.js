@@ -1,49 +1,56 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import gql from 'graphql-tag'
 import { graphql } from 'react-apollo'
 import styled from '@emotion/styled'
 import { Page } from 'components/Layout'
-import Debug from 'components/Debug'
+import { InfluencerItem } from 'components/InfluencerItem'
+import { mungeDataInfluencerItem } from 'utils'
 
-const Container = styled.div`
+const Content = styled.div`
   position: relative;
   width: 100%;
-  height: 100%;
-  background-color: rgba(255, 0, 255, 0.2);
+  box-shadow: 0px 0px 100px -30px rgba(0,0,0,0.54);
 `
 
-export const InfluencersList = ({ data, isLoading }) => (
-  // <Debug style={{ textAlign: 'left' }} {...props} />
-  <Page>
-
+export const InfluencersList = ({ data, isLoading, children }) => (
+  <Page background='#f7f7f7'>
+    <Content>
+      {data && data.map(influencer => <InfluencerItem key={influencer.id} {...influencer}/>)}
+    </Content>
   </Page>
 )
 
-export const INFLUENCERS = gql`
+InfluencersList.propTypes = {
+  data: PropTypes.array,
+  isLoading: PropTypes.bool,
+  children: PropTypes.func
+}
+
+InfluencersList.defaultProps = {
+  data: undefined,
+  isLoading: false,
+  children: undefined
+}
+
+export const INFLUENCERS_LIST = gql`
   query InfluencersList {
     influencers {
       id
       handle
       avatar
-      twitchId
-      twitchFollowers
       twitchViewers
-      twitchUrl
-      twitterFollowers
-      twitterLink
-      youtubeSubscribers
-      youtubeLink
     }
   }
 `
 
-export const withInfluencers = graphql(INFLUENCERS, {
+export const withInfluencersList = graphql(INFLUENCERS_LIST, {
   // map response to component props
-  props: ({ data, ownProps }) => ({
-    isLoading: data && data.loading,
-    errors: data && data.error,
-    data: data && data.influencers
-  }),
+  props: ({ data, ownProps }) => data ? {
+    isLoading: data.loading,
+    errors: data.error,
+    data: data.influencers && data.influencers.map(influencer => mungeDataInfluencerItem(influencer))
+  } : { isLoading: false },
   // map props to query options
   options: () => {
     return ({
@@ -53,4 +60,4 @@ export const withInfluencers = graphql(INFLUENCERS, {
   }
 })
 
-export default withInfluencers(InfluencersList)
+export default withInfluencersList(InfluencersList)
