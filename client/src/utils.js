@@ -1,5 +1,3 @@
-
-
 export const mungeDataInfluencerItem = data => data ? {
   id: data.id,
   thumbUrl: data.avatar,

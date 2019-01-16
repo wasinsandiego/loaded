@@ -13,12 +13,11 @@
 import React from 'react'
 import gql from 'graphql-tag'
 import { graphql } from 'react-apollo'
-import { compose, withState, lifecycle } from 'recompose'
+import { compose, withState, lifecycle, setDisplayName } from 'recompose'
 import styled from '@emotion/styled'
 import { secondaryText, thinText } from 'GlobalStyles'
 import { mungeDataInfluencerItem } from 'utils'
 import Thumb from 'components/Thumb'
-import Debug from 'components/Debug'
 
 const Container = styled.article`
   position: relative;
@@ -108,9 +107,10 @@ export const InfluencerItem = compose(
       // super lame but didn't want to get into key frames atm
       setTimeout(() => this.props.setShow(true), 0)
     }
-  })
+  }),
+  setDisplayName('InfluencerItem')
 )(
-  ({ id, thumbUrl, title, subTitle, isLoading, show }) => (
+  ({ thumbUrl, title, subTitle, show }) => (
     <Container className='container'>
       <Avatar
         src={thumbUrl}
@@ -138,7 +138,7 @@ export const INFLUENCER_ITEM = gql`
 
 export const withInfluencerItem = graphql(INFLUENCER_ITEM, {
   // map response to component props
-  props: ({ data, ownProps }) => ({
+  props: ({ data }) => ({
     isLoading: data && data.loading,
     errors: data && data.error,
     ...mungeDataInfluencerItem(data && data.influencer)

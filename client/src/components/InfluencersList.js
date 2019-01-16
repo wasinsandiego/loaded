@@ -13,13 +13,15 @@ const Content = styled.div`
   box-shadow: 0px 0px 100px -30px rgba(0,0,0,0.54);
 `
 
-export const InfluencersList = ({ data, isLoading, children }) => (
-  <Page background='#f7f7f7'>
+export const InfluencersList = ({ data }) => (
+  <Page background='#f7f7f7' className='foo'>
     <Content>
       {data && data.map(influencer => <InfluencerItem key={influencer.id} {...influencer}/>)}
     </Content>
   </Page>
 )
+
+InfluencersList.displayName = 'InfluencersList'
 
 InfluencersList.propTypes = {
   data: PropTypes.array,
@@ -46,7 +48,7 @@ export const INFLUENCERS_LIST = gql`
 
 export const withInfluencersList = graphql(INFLUENCERS_LIST, {
   // map response to component props
-  props: ({ data, ownProps }) => data ? {
+  props: ({ data }) => data ? {
     isLoading: data.loading,
     errors: data.error,
     data: data.influencers && data.influencers.map(influencer => mungeDataInfluencerItem(influencer))
