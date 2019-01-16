@@ -19,7 +19,7 @@ const Logo = styled.img`
   transform: translateX(-50%) translateY(-50%);
 `
 
-const Header = ({}) => (
+const Header = () => (
   <Container>
     <Logo src='logo.svg' />
   </Container>

@@ -110,5 +110,8 @@ if (process.env.NODE_ENV === 'production') {
   })
 }
 
-app.listen(port, () => console.log('GraphQL running on localhost:4000/graphql'))
+app.listen(port, () => {
+  console.log('GraphQL running on http://localhost:4000/graphql')
+  console.log('App running on http://localhost:3000')
+})
 // app.listen(port, () => console.log(`Listening on port ${port}`))
